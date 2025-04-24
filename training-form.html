@@ -297,7 +297,7 @@
   </form>
 
   <script>
-    const steps = document.querySelectorAll(".form-step");
+
     const nextBtn = document.getElementById("nextBtn");
     const prevBtn = document.getElementById("prevBtn");
     const submitBtn = document.getElementById("submitBtn");
@@ -313,10 +313,14 @@
     });
 
     function showStep(index) {
-      steps.forEach((step, i) => step.classList.toggle("active", i === index));
-      prevBtn.style.display = index > 0 ? "inline" : "none";
-      nextBtn.style.display = index < steps.length - 1 ? "inline" : "none";
-      submitBtn.style.display = index === steps.length - 1 ? "inline" : "none";
+  const steps = document.querySelectorAll(".form-step");
+  steps.forEach((step, i) => step.classList.toggle("active", i === index));
+  prevBtn.style.display = index > 0 ? "inline" : "none";
+  nextBtn.style.display = index < steps.length - 1 ? "inline" : "none";
+  submitBtn.style.display = index === steps.length - 1 ? "inline" : "none";
+}
+
+
     }
 
     nextBtn?.addEventListener("click", () => {
@@ -370,4 +374,5 @@
   </script>
 </body>
 </html>
+
 
