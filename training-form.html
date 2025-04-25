@@ -297,33 +297,32 @@
   </form>
 
   <script>
-
-    const nextBtn = document.getElementById("nextBtn");
-    const prevBtn = document.getElementById("prevBtn");
-    const submitBtn = document.getElementById("submitBtn");
+  document.addEventListener("DOMContentLoaded", () => {
     const intakeForm = document.getElementById("intakeForm");
     const openFormBtn = document.getElementById("openFormBtn");
     const successMessage = document.getElementById("successMessage");
+    const nextBtn = document.getElementById("nextBtn");
+    const prevBtn = document.getElementById("prevBtn");
+    const submitBtn = document.getElementById("submitBtn");
     let currentStep = 0;
 
     openFormBtn.addEventListener("click", () => {
       intakeForm.style.display = "block";
       openFormBtn.style.display = "none";
       successMessage.style.display = "none";
+      showStep(currentStep);
     });
 
     function showStep(index) {
-  
-  steps.forEach((step, i) => step.classList.toggle("active", i === index));
-  prevBtn.style.display = index > 0 ? "inline" : "none";
-  nextBtn.style.display = index < steps.length - 1 ? "inline" : "none";
-  submitBtn.style.display = index === steps.length - 1 ? "inline" : "none";
-}
-
-
+      const steps = document.querySelectorAll(".form-step");
+      steps.forEach((step, i) => step.classList.toggle("active", i === index));
+      prevBtn.style.display = index > 0 ? "inline" : "none";
+      nextBtn.style.display = index < steps.length - 1 ? "inline" : "none";
+      submitBtn.style.display = index === steps.length - 1 ? "inline" : "none";
     }
 
-    nextBtn?.addEventListener("click", () => {
+    nextBtn.addEventListener("click", () => {
+      const steps = document.querySelectorAll(".form-step");
       if (currentStep < steps.length - 1) {
         const currentInputs = steps[currentStep].querySelectorAll("input, select, textarea");
         const valid = Array.from(currentInputs).every(input => input.checkValidity());
@@ -336,14 +335,14 @@
       }
     });
 
-    prevBtn?.addEventListener("click", () => {
-      if (currentStep > 0) currentStep--;
-      showStep(currentStep);
+    prevBtn.addEventListener("click", () => {
+      if (currentStep > 0) {
+        currentStep--;
+        showStep(currentStep);
+      }
     });
 
-    showStep(currentStep);
-
-    document.getElementById("intakeForm").addEventListener("submit", function(e) {
+    document.getElementById("intakeForm").addEventListener("submit", function (e) {
       e.preventDefault();
       const formData = new FormData(this);
       const data = {};
@@ -371,7 +370,9 @@
       successMessage.style.display = "block";
       openFormBtn.style.display = "inline-block";
     });
-  </script>
+  });
+</script>
+
 </body>
 </html>
 
