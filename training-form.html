@@ -297,80 +297,84 @@
   </form>
 
   <script>
-    // Moved inside showStep to ensure it runs after form is visible
-    const nextBtn = document.getElementById("nextBtn");
-    const prevBtn = document.getElementById("prevBtn");
-    const submitBtn = document.getElementById("submitBtn");
-    const intakeForm = document.getElementById("intakeForm");
-    const openFormBtn = document.getElementById("openFormBtn");
-    const successMessage = document.getElementById("successMessage");
-    let currentStep = 0;
+document.addEventListener("DOMContentLoaded", () => {
+  const nextBtn = document.getElementById("nextBtn");
+  const prevBtn = document.getElementById("prevBtn");
+  const submitBtn = document.getElementById("submitBtn");
+  const intakeForm = document.getElementById("intakeForm");
+  const openFormBtn = document.getElementById("openFormBtn");
+  const successMessage = document.getElementById("successMessage");
+  let currentStep = 0;
 
-    openFormBtn.addEventListener("click", () => {
-      intakeForm.style.display = "block";
-      openFormBtn.style.display = "none";
-      successMessage.style.display = "none";
-    });
+  openFormBtn.addEventListener("click", () => {
+    intakeForm.style.display = "block";
+    openFormBtn.style.display = "none";
+    successMessage.style.display = "none";
+    showStep(currentStep);
+  });
 
-    function showStep(index) {
-      const steps = document.querySelectorAll(".form-step");
-      steps.forEach((step, i) => step.classList.toggle("active", i === index));
-      prevBtn.style.display = index > 0 ? "inline" : "none";
-      nextBtn.style.display = index < steps.length - 1 ? "inline" : "none";
-      submitBtn.style.display = index === steps.length - 1 ? "inline" : "none";
+  function showStep(index) {
+    const steps = document.querySelectorAll(".form-step");
+    steps.forEach((step, i) => step.classList.toggle("active", i === index));
+    prevBtn.style.display = index > 0 ? "inline" : "none";
+    nextBtn.style.display = index < steps.length - 1 ? "inline" : "none";
+    submitBtn.style.display = index === steps.length - 1 ? "inline" : "none";
+  }
+
+  nextBtn?.addEventListener("click", () => {
+    const steps = document.querySelectorAll(".form-step");
+    if (currentStep < steps.length - 1) {
+      const currentInputs = steps[currentStep].querySelectorAll("input, select, textarea");
+      const valid = Array.from(currentInputs).every(input => input.checkValidity());
+      if (valid) {
+        currentStep++;
+        showStep(currentStep);
+      } else {
+        currentInputs.forEach(input => input.reportValidity());
+      }
     }
+  });
 
-    nextBtn?.addEventListener("click", () => {
-      if (currentStep < steps.length - 1) {
-        const currentInputs = steps[currentStep].querySelectorAll("input, select, textarea");
-        const valid = Array.from(currentInputs).every(input => input.checkValidity());
-        if (valid) {
-          currentStep++;
-          showStep(currentStep);
-        } else {
-          currentInputs.forEach(input => input.reportValidity());
-        }
+  prevBtn?.addEventListener("click", () => {
+    if (currentStep > 0) currentStep--;
+    showStep(currentStep);
+  });
+
+  showStep(currentStep);
+
+  document.getElementById("intakeForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const data = {};
+    formData.forEach((value, key) => {
+      if (data[key]) {
+        data[key] += ", " + value;
+      } else {
+        data[key] = value;
       }
     });
 
-    prevBtn?.addEventListener("click", () => {
-      if (currentStep > 0) currentStep--;
-      showStep(currentStep);
+    fetch("https://script.google.com/macros/s/AKfycbyr87s2JlLVrWIlrmbeDy_uKLxuOtp3B3qp5ouR-tXC10uBYZcgAQRtpcBDdGcuubraiQ/exec", {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
     });
 
+    this.reset();
+    currentStep = 0;
     showStep(currentStep);
-
-    document.getElementById("intakeForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const formData = new FormData(this);
-      const data = {};
-      formData.forEach((value, key) => {
-        if (data[key]) {
-          data[key] += ", " + value;
-        } else {
-          data[key] = value;
-        }
-      });
-
-      fetch("https://script.google.com/macros/s/AKfycbxr2y1NChnFukRSBTSxDKHOQ-Jlvruw4XkrKVw47BgO9TQwU8hwx9X3wsrWNE4EwK0d_g/exec", {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      });
-
-      this.reset();
-      currentStep = 0;
-      showStep(currentStep);
-      intakeForm.style.display = "none";
-      successMessage.style.display = "block";
-      openFormBtn.style.display = "inline-block";
-    });
-  </script>
+    intakeForm.style.display = "none";
+    successMessage.style.display = "block";
+    openFormBtn.style.display = "inline-block";
+  });
+});
+</script>
 </body>
 </html>
+
 
 
 
